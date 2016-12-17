@@ -1,21 +1,13 @@
 #define _GNU_SOURCE
 
-#include <dlfcn.h>
 #include <stdio.h>
-
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <string.h>
-#include <errno.h>
 #include <netinet/tcp.h>
-#include <dlfcn.h>
 #include <assert.h>
+#include <unistd.h>
+#include <arpa/inet.h>
 
 void main(void) {
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -31,8 +23,9 @@ void main(void) {
 
     while (1) {
         printf("sending?\n");
-        send(sockfd, "hello", 5, 0);
-        printf("sent?\n");
+        char *msg = "hello";
+        rv = send(sockfd, msg, strlen(msg) + 1 /* include '\0' */, 0);
+        printf("sent? rv = %d\n", rv);
         sleep(1);
     }
 }

@@ -1,19 +1,8 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <arpa/inet.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <sys/socket.h>
 #include <string.h>
-#include <unistd.h>
-#include <err.h>
 #include <stdbool.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <dirent.h>
-#include <sys/wait.h>
-#include <pthread.h>
 #include <netinet/tcp.h>
 #include <assert.h>
 
@@ -33,14 +22,17 @@ void main(void) {
 
     rv = listen(sockfd, 5);
     assert(rv >= 0);
-    while (true) {
+    while (1) {
         printf("accepting\n");
         int sa_size = sizeof(struct sockaddr_in);
         int sessfd = accept(sockfd, (struct sockaddr *)&cli, &sa_size);
-        while (true) {
-            char buf[6];
-            recv(sessfd, buf, 5, 0);
-            buf[5] = '\0';
+        while (1) {
+            char buf[100];
+            rv = recv(sessfd, buf, sizeof(buf), 0);
+            if (rv == 0) {
+                printf("bad recv(), restarting\n");
+                break;
+            }
             printf("buf = %s\n", buf);
         }
     }
