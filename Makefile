@@ -1,4 +1,4 @@
 all: client server
 
 %: %.c
-	gcc -o $@ $<
+	cc -o $@ $<
